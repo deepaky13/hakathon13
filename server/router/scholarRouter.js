@@ -8,13 +8,17 @@ import {
   updateScholarship,
   deleteScholarship,
 } from "../controller/schollarController.js";
+import { authenticateUser } from "../middleware/AuthenticationMiddleware.js";
 
-router.route("/").get(getAllScholarships).post(createScholarship);
+router
+  .route("/")
+  .get(getAllScholarships)
+  .post(authenticateUser, createScholarship);
 
 router
   .route("/:id")
   .get(getScholarshipById)
-  .patch(updateScholarship)
-  .delete(deleteScholarship);
+  .patch(authenticateUser, updateScholarship)
+  .delete(authenticateUser, deleteScholarship);
 
 export default router;

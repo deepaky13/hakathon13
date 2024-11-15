@@ -8,13 +8,16 @@ import {
   updateGeneralInfo,
   deleteGeneralInfo,
 } from "../controller/generalController.js";
-
-router.route("/").get(getAllGeneralInfo).post(createGeneralInfo);
+import { authenticateUser } from "../middleware/AuthenticationMiddleware.js";
+router
+  .route("/")
+  .get(getAllGeneralInfo)
+  .post(authenticateUser, createGeneralInfo);
 
 router
   .route("/:id")
   .get(getGeneralInfoById)
-  .patch(updateGeneralInfo)
-  .delete(deleteGeneralInfo);
+  .patch(authenticateUser, updateGeneralInfo)
+  .delete(authenticateUser, deleteGeneralInfo);
 
 export default router;

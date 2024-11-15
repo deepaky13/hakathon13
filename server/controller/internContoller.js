@@ -9,7 +9,7 @@ export const createInternship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `New internship posted: ${newInternship.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -54,7 +54,7 @@ export const updateInternship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Internship updated: ${updatedInternship.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -74,7 +74,7 @@ export const deleteInternship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Internship deleted: ${deletedInternship.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 

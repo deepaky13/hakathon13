@@ -17,11 +17,10 @@ import scholarshipRouter from "./router/scholarRouter.js";
 import eventRouter from "./router/eventRouter.js";
 import generalInfoRouter from "./router/genralRouter.js";
 import onDutyFormRouter from "./router/onDutyRouter.js";
-
+import attendanceRouter from "./router/attendanceRouter.js";
 // Default export
 const app = express();
 const port = 3333;
-
 
 // Use express.json() instead of bodyParser.json()
 app.use(express.json());
@@ -49,6 +48,9 @@ app.use("/api/v1/admin/scholarships", scholarshipRouter); // Scholarship routes
 app.use("/api/v1/admin/events", eventRouter); // Events routes
 app.use("/api/v1/admin/general-info", generalInfoRouter); // General information routes
 app.use("/api/v1/student/on-duty", onDutyFormRouter);
+
+// Admin route for managing attendance
+app.use("/api/v1/admin/attendance", attendanceRouter);
 
 // Error handling routes
 app.use("*", (req, res) => {

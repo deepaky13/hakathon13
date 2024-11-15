@@ -8,13 +8,17 @@ import {
   updateInternship,
   deleteInternship,
 } from "../controller/internContoller.js";
+import { authenticateUser } from "../middleware/AuthenticationMiddleware.js";
 
-router.route("/").get(getAllInternships).post(createInternship);
+router
+  .route("/")
+  .get(getAllInternships)
+  .post(authenticateUser, createInternship);
 
 router
   .route("/:id")
   .get(getInternshipById)
-  .patch(updateInternship)
-  .delete(deleteInternship);
+  .patch(authenticateUser, updateInternship)
+  .delete(authenticateUser, deleteInternship);
 
 export default router;

@@ -9,7 +9,7 @@ export const createExamTimetable = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `New exam timetable posted: ${newTimetable.name}`,
-      recipient: req.user._id, // Assuming the logged-in user is the admin/staff posting
+      userId: req.user.userId, // Assuming the logged-in user is the admin/staff posting
     });
     await notification.save();
 
@@ -54,7 +54,7 @@ export const updateExamTimetable = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Exam timetable updated: ${updatedTimetable.name}`,
-      recipient: req.user._id, // Assuming the logged-in user is the admin/staff
+      userId: req.user.userId, // Assuming the logged-in user is the admin/staff
     });
     await notification.save();
 
@@ -76,7 +76,7 @@ export const deleteExamTimetable = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Exam timetable deleted: ${deletedTimetable.name}`,
-      recipient: req.user._id, // Assuming the logged-in user is the admin/staff
+      userId: req.user.userId, // Assuming the logged-in user is the admin/staff
     });
     await notification.save();
 

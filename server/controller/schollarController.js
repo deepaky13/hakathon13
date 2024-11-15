@@ -9,7 +9,7 @@ export const createScholarship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `New scholarship posted: ${newScholarship.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -54,7 +54,7 @@ export const updateScholarship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Scholarship updated: ${updatedScholarship.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -76,7 +76,7 @@ export const deleteScholarship = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Scholarship deleted: ${deletedScholarship.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 

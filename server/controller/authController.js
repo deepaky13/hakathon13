@@ -47,7 +47,7 @@ export const login = async (req, res, next) => {
       expires: new Date(Date.now() + oneWeek),
       // secure: process.env.NODE_ENV === "production",
     });
-    res.status(201).json({ msg: "user is logged in", token });
+    res.status(201).json({ msg: "user is logged in", token, user });
   } catch (error) {
     next(error);
   }

@@ -9,7 +9,7 @@ export const createCourse = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `New course posted: ${newCourse.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -53,7 +53,7 @@ export const updateCourse = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Course updated: ${updatedCourse.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -72,7 +72,7 @@ export const deleteCourse = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `Course deleted: ${deletedCourse.name}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 

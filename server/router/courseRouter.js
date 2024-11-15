@@ -8,13 +8,14 @@ import {
   updateCourse,
   deleteCourse,
 } from "../controller/courseController.js";
+import { authenticateUser } from "../middleware/AuthenticationMiddleware.js";
 
-router.route("/").get(getAllCourses).post(createCourse);
+router.route("/").get(getAllCourses).post(authenticateUser, createCourse);
 
 router
   .route("/:id")
   .get(getCourseById)
-  .patch(updateCourse)
-  .delete(deleteCourse);
+  .patch(authenticateUser, updateCourse)
+  .delete(authenticateUser, deleteCourse);
 
 export default router;

@@ -9,7 +9,7 @@ export const createGeneralInfo = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `New general information posted: ${newGeneralInfo.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -54,7 +54,7 @@ export const updateGeneralInfo = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `General info updated: ${updatedGeneralInfo.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 
@@ -76,7 +76,7 @@ export const deleteGeneralInfo = async (req, res) => {
     // Create a notification
     const notification = new Notification({
       message: `General info deleted: ${deletedGeneralInfo.title}`,
-      recipient: req.user._id,
+      userId: req.user.userId,
     });
     await notification.save();
 

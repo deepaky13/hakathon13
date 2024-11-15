@@ -9,12 +9,18 @@ import {
   deleteExamTimetable,
 } from "../controller/examController.js";
 
-router.route("/").get(getAllExamTimetables).post(createExamTimetable);
+import { authenticateUser } from "../middleware/AuthenticationMiddleware.js";
+
+
+router
+  .route("/")
+  .get(getAllExamTimetables)
+  .post(authenticateUser, createExamTimetable);
 
 router
   .route("/:id")
   .get(getExamTimetableById)
-  .patch(updateExamTimetable)
-  .delete(deleteExamTimetable);
+  .patch(authenticateUser, updateExamTimetable)
+  .delete(authenticateUser, deleteExamTimetable);
 
 export default router;
