@@ -12,7 +12,7 @@ const router = Router();
 // Routes
 router
   .route("/")
-  .get(getAllOnDutyForms) // Get all forms
+  .get(authenticateUser,getAllOnDutyForms) // Get all forms
   .post(authenticateUser, createOnDutyForm); // Create a form
 
 router

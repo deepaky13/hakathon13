@@ -48,20 +48,28 @@ export const updateOnDutyStatus = async (req, res) => {
 
     // Find the On-Duty form by ID
     const onDutyForm = await OnDutyFormModel.findById(id);
-    console.log(onDutyForm);
-
     if (!onDutyForm) {
       return res.status(404).json({ message: "On-Duty Form not found" });
     }
 
-    // Update status based on the role of the user
-    if (currentUser.role === "admin" && onDutyForm.status === "Pending") {
-      onDutyForm.status = "Processing";
+    // Check for appropriate status transitions
+    if (currentUser.role === "staff" && onDutyForm.status === "Pending") {
+      // Staff can approve or reject the form, but it will not be sent to HOD unless approved.
+      onDutyForm.status = "Processing"; // Staff can mark it as processing
     } else if (
-      currentUser.role === "head" &&
+      currentUser.role === "hod" &&
       onDutyForm.status === "Processing"
     ) {
-      onDutyForm.status = "Approved";
+      // HOD can approve or reject the form
+      const { decision } = req.body; // Expecting 'approve' or 'reject' in request body
+
+      if (decision === "approve") {
+        onDutyForm.status = "Approved"; // If HOD approves, status changes to "Approved"
+      } else if (decision === "reject") {
+        onDutyForm.status = "Rejected"; // If HOD rejects, status changes to "Rejected"
+      } else {
+        return res.status(400).json({ message: "Invalid decision" });
+      }
     } else {
       return res
         .status(403)
@@ -71,17 +79,24 @@ export const updateOnDutyStatus = async (req, res) => {
     // Save the updated form
     await onDutyForm.save();
 
-    // Create notification based on the status
-    const notificationMessage =
-      onDutyForm.status === "Processing"
-        ? `On-Duty form by ${onDutyForm.studentName} is now in process by staff.`
-        : `On-Duty form by ${onDutyForm.studentName} has been approved by HOD.`;
+    // Create notification based on the status update
+    let notificationMessage;
+    if (onDutyForm.status === "Processing") {
+      notificationMessage = `On-Duty form by ${onDutyForm.studentName} is now in process by staff.`;
+    } else if (onDutyForm.status === "Approved") {
+      notificationMessage = `On-Duty form by ${onDutyForm.studentName} has been approved by HOD.`;
+    } else if (onDutyForm.status === "Rejected") {
+      notificationMessage = `On-Duty form by ${onDutyForm.studentName} has been rejected.`;
+    }
 
-    await NotificationModel.create({
+    // Create a notification for the student and/or staff depending on the status change
+    const notificationData = {
       message: notificationMessage,
       userId: onDutyForm.createdBy, // Notify the student who submitted the form
-    });
+    };
+    await NotificationModel.create(notificationData);
 
+    // Send the response
     res.status(200).json({ message: `Status updated to ${onDutyForm.status}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -91,8 +106,24 @@ export const updateOnDutyStatus = async (req, res) => {
 // Get All On-Duty Forms
 export const getAllOnDutyForms = async (req, res) => {
   try {
-    const allOnDutyForms = await OnDutyFormModel.find();
-    res.status(200).json(allOnDutyForms);
+    const currentUser = req.user; // Assuming the user info is stored in req.user
+
+    let onDutyForms;
+
+    if (currentUser.role === "admin") {
+      // If the user is staff, return all On-Duty forms
+      onDutyForms = await OnDutyFormModel.find();
+    } else if (currentUser.role === "head") {
+      // If the user is head, return only the forms that have been approved by staff (status = "Processing")
+      onDutyForms = await OnDutyFormModel.find({ status: "Processing" });
+    } else {
+      // If the user is neither staff nor head, return an error
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to view the On-Duty forms" });
+    }
+
+    res.status(200).json(onDutyForms);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

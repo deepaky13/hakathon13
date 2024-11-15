@@ -13,7 +13,7 @@ const onDutySchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
-      enum: ["Pending", "Processing", "Approved"],
+      enum: ["Pending", "Processing", "Approved", "Rejected"],
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
